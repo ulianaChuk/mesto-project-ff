@@ -7,8 +7,10 @@ const placesList = document.querySelector(".places__list");
 // @todo: Функция создания карточки
 function createCard(data, deleteCallback) {
   const newCard = cardTemplate.cloneNode(true);
-  //   console.log(newCard);
-  newCard.querySelector(".card__image").src = data.link;
+  const cardImg = newCard.querySelector(".card__image");
+
+  cardImg.alt = data.name;
+  cardImg.src = data.link;
   newCard.querySelector(".card__title").textContent = data.name;
   newCard
     .querySelector(".card__delete-button")
@@ -18,9 +20,8 @@ function createCard(data, deleteCallback) {
 }
 
 // @todo: Функция удаления карточки
-function deleteCard() {
-  const button = document.querySelector(".card__delete-button");
-  const deleteButton = button.closest(".places__item");
+function deleteCard(clickBurron) {
+  const deleteButton = clickBurron.target.closest(".places__item");
   deleteButton.remove();
 }
 // @todo: Вывести карточки на страницу
