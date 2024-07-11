@@ -15,15 +15,15 @@ function createCard(data, deleteCallback) {
   newCard
     .querySelector(".card__delete-button")
     .addEventListener("click", deleteCallback);
-
   return newCard;
 }
 
 // @todo: Функция удаления карточки
-function deleteCard(clickBurron) {
-  const deleteButton = clickBurron.target.closest(".places__item");
-  deleteButton.remove();
+function deleteCard(clickEvent) {
+  const card = clickEvent.target.closest(".places__item");
+  card.remove();
 }
+
 // @todo: Вывести карточки на страницу
 function insertCards() {
   initialCards.forEach((cardData) => {
