@@ -4,6 +4,7 @@ import "./pages/index.css"; // Импорт главного файла стил
 import { initialCards } from "./scripts/cards";
 import { openPopup, closePopup } from "./components/modal";
 import { createCard, deleteCard, handleLikeClick } from "./components/card";
+import {validationSettings,resetForm,enableValidation} from "./components/formValidation";
 
 // Переменные для работы с DOM
 const cardTemplate = document.querySelector("#card-template").content;
@@ -18,6 +19,7 @@ const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const nameInput = document.querySelector(".popup__input_type_name");
 const jobInput = document.querySelector(".popup__input_type_description");
+const profileImg = document.querySelector(".profile__img");
 
 // Инициализация начальных карточек
 function insertInitialCards() {
@@ -92,7 +94,8 @@ function handleProfileFormSubmit(evt) {
 // Добавление обработчиков событий
 popupOpenEditButton.addEventListener("click", (evt) => {
   evt.preventDefault();
-  openPopup(popupContentEdit, fillProfileForm);
+  fillProfileForm();
+  openPopup(popupContentEdit);
 });
 
 popupOpenAddButton.addEventListener("click", (evt) => {
@@ -104,15 +107,63 @@ popupCloseButtons.forEach((button) => {
   button.addEventListener("click", (evt) => {
     evt.preventDefault();
     const openedPopup = document.querySelector(".popup_is-opened");
+    const formElement = openedPopup.querySelector(".popup__form");
     closePopup(openedPopup);
+    resetForm(formElement,validationSettings);
   });
 });
 
-const profileFormElement = document.querySelector("form.popup__form[name='edit-profile']");
-const newCardFormElement = document.querySelector("form.popup__form[name='new-place']");
+const profileFormElement = document.querySelector(
+  "form.popup__form[name='edit-profile']"
+);
+const newCardFormElement = document.querySelector(
+  "form.popup__form[name='new-place']"
+);
 
 profileFormElement.addEventListener("submit", handleProfileFormSubmit);
 newCardFormElement.addEventListener("submit", handleNewCardFormSubmit);
 
 // Вставка начальных карточек на страницу
 insertInitialCards();
+
+// Включение валидации форм
+enableValidation(validationSettings);
+
+// api
+
+// Функция получения данных пользователя
+function fetchMe() {
+  return fetch("https://mesto.nomoreparties.co/v1/wff-cohort-21/users/me", {
+    headers: {
+      authorization: "773c1fbd-3d62-4d04-95a5-36b224f586a4",
+    },
+  });
+}
+
+fetchMe()
+  .then((res) => res.json())
+  .then((data) => {
+    profileTitle.textContent = data.name;
+    profileDescription.textContent = data.about;
+    profileImg.src = data.avatar;
+  })
+  .catch((err) => {
+    console.error("Ошибка при получении данных пользователя:", err);
+  });
+
+// Функция получения карточек
+function fetchCards() {
+  return fetch("https://mesto.nomoreparties.co/v1/wff-cohort-21/cards", {
+    headers: {
+      authorization: "773c1fbd-3d62-4d04-95a5-36b224f586a4",
+    },
+  });
+}
+
+fetchCards()
+  .then((res) => res.json())
+  .then((result) => {
+    console.log(result);
+  });
+
+
