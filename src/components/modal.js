@@ -1,11 +1,9 @@
 // Функция открытия попапа
 export function openPopup(popup) {
-  
   popup.classList.add("popup_is-opened");
   document.addEventListener("keydown", handleEscKey);
   popup.addEventListener("mousedown", handleOverlayClick);
 }
-
 
 // Функция закрытия попапа
 export function closePopup(popup) {
@@ -13,11 +11,6 @@ export function closePopup(popup) {
   document.removeEventListener("keydown", handleEscKey);
   popup.removeEventListener("mousedown", handleOverlayClick);
 }
-
-// function resrtForm(formElement,hideInputErrorCallback){
-//   formElement.reset();
-//   hideInputErrorCallback()
-// }
 
 // Обработчик клика по оверлею
 export function handleOverlayClick(evt) {
