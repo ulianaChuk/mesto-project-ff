@@ -3,11 +3,7 @@
 import "./pages/index.css"; // Импорт главного файла стилей
 import { openPopup, closePopup } from "./components/modal";
 import { createCard } from "./components/card";
-import {
-  validationSettings,
-  resetForm,
-  enableValidation,
-} from "./components/formValidation";
+import { resetForm, enableValidation } from "./components/formValidation";
 import {
   fetchMe,
   fetchCards,
@@ -113,13 +109,11 @@ function handleNewCardFormSubmit(evt) {
     .then((newCardData) => {
       const newCard = createCard(
         newCardData,
-
-        deleteLikeCard,
-        setLikeCard,
         openImagePopup,
         cardTemplate,
         userId,
-        openDeleteCardPopup
+        openDeleteCardPopup,
+        handleLikeClick
       );
       placesList.prepend(newCard);
       closePopup(popupNewCard);
@@ -197,6 +191,14 @@ profileFormElement.addEventListener("submit", handleProfileFormSubmit);
 newCardFormElement.addEventListener("submit", handleNewCardFormSubmit);
 avatarFormElement.addEventListener("submit", handleAvatarFormSubmit);
 
+const validationSettings = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__input-error_active",
+};
 // Включение валидации форм
 enableValidation(validationSettings);
 
@@ -223,12 +225,11 @@ function insertCards(data) {
   data.forEach((cardData) => {
     const card = createCard(
       cardData,
-      deleteLikeCard,
-      setLikeCard,
       openImagePopup,
       cardTemplate,
       userId,
-      openDeleteCardPopup
+      openDeleteCardPopup,
+      handleLikeClick
     );
     placesList.append(card);
   });
@@ -243,4 +244,20 @@ function renderLoading(isLoading, saveButton) {
   } else {
     saveButton.textContent = "Сохранить";
   }
+}
+// Функция обработки клика по кнопке лайка
+function handleLikeClick(evt, cardId) {
+  const likeButton = evt.target;
+  const likeCountElement = evt.target.nextElementSibling;
+  const likeMethod = likeButton.classList.contains(
+    "card__like-button_is-active"
+  )
+    ? deleteLikeCard
+    : setLikeCard;
+  likeMethod(cardId)
+    .then((updatedCard) => {
+      likeButton.classList.toggle("card__like-button_is-active");
+      likeCountElement.textContent = updatedCard.likes.length;
+    })
+    .catch((err) => console.error(`Ошибка при лайке карточки: ${err}`));
 }

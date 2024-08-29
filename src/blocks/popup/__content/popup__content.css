@@ -27,3 +27,7 @@
   box-sizing: border-box;
   padding: 34px 36px;
 }
+
+.popup__content-change-avatar{
+  min-height: 272px;
+}
